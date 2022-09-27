@@ -6,8 +6,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import { gql } from 'apollo-server-express';
-import { expressjwt } from 'express-jwt';
+import jwt from 'express-jwt';
 import { expressJwtSecret } from 'jwks-rsa';
 import { promisify } from 'node:util';
 
@@ -16,22 +15,22 @@ export class AuthorizationGuard implements CanActivate {
   private AUTH0_AUDIENCE: string;
   private AUTH0_DOMAIN: string;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(private configService: ConfigService) {
     this.AUTH0_AUDIENCE = this.configService.get('AUTH0_AUDIENCE') ?? '';
     this.AUTH0_DOMAIN = this.configService.get('AUTH0_DOMAIN') ?? '';
   }
 
-  public async canActivate(context: ExecutionContext): Promise<boolean> {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const { req, res } = GqlExecutionContext.create(context).getContext();
 
-    const checkeJWT = promisify(
-      expressjwt({
+    const checkJWT = promisify(
+      jwt({
         secret: expressJwtSecret({
           cache: true,
           rateLimit: true,
           jwksRequestsPerMinute: 5,
           jwksUri: `${this.AUTH0_DOMAIN}.well-known/jwks.json`,
-        }) as any,
+        }),
         audience: this.AUTH0_AUDIENCE,
         issuer: this.AUTH0_DOMAIN,
         algorithms: ['RS256'],
@@ -39,7 +38,7 @@ export class AuthorizationGuard implements CanActivate {
     );
 
     try {
-      await checkeJWT(req, res);
+      await checkJWT(req, res);
 
       return true;
     } catch (err) {
