@@ -1,5 +1,5 @@
 import { Purchase } from './../models/purchase.model';
-import { PurchasesUseCases } from './../../../app/useCases/purchases/purchases.useCases';
+import { PurchasesUseCases } from '../../../data/useCases/purchases/purchases.useCases';
 import { AuthorizationGuard } from '../../../domain/middlewares/authorization.guard';
 import {
   Args,
@@ -10,13 +10,13 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
-import { ProductsUseCases } from 'src/app/useCases/products/products.useCases';
+import { ProductsUseCases } from 'src/data/useCases/products/products.useCases';
 import { CreatePurchaseInput } from '../inputs/createPurchase.input';
 import {
   AuthUser,
   CurrentUser,
 } from 'src/domain/middlewares/currentUser.decorator';
-import { CustomerUseCases } from 'src/app/useCases/customers/customersUseCase';
+import { CustomerUseCases } from 'src/data/useCases/customers/customersUseCase';
 
 @Resolver(() => Purchase)
 export class PurchasesResolver {

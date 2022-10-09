@@ -2,7 +2,7 @@ import { AuthorizationGuard } from '../../../domain/middlewares/authorization.gu
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { Product } from '../models/product.model';
-import { ProductsUseCases } from 'src/app/useCases/products/products.useCases';
+import { ProductsUseCases } from 'src/data/useCases/products/products.useCases';
 import { CreateProductInput } from '../inputs/createProduct.input';
 
 @Resolver(() => Product)

@@ -1,10 +1,16 @@
-import { PurchasesUseCases } from './../../../app/useCases/purchases/purchases.useCases';
+import { PurchasesUseCases } from '../../../data/useCases/purchases/purchases.useCases';
 import { AuthorizationGuard } from '../../../domain/middlewares/authorization.guard';
-import { Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import {
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+  ResolveReference,
+} from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 
 import { Customer } from '../models/customer.model';
-import { CustomerUseCases } from 'src/app/useCases/customers/customersUseCase';
+import { CustomerUseCases } from 'src/data/useCases/customers/customersUseCase';
 import {
   AuthUser,
   CurrentUser,
@@ -26,5 +32,10 @@ export class CustomersResolver {
   @ResolveField()
   public async purchases(@Parent() customer: Customer) {
     return this.purchasesUseCases.listAllFromCustomer(customer.id);
+  }
+
+  @ResolveReference()
+  public async resolveReference(referente: { authUserId: string }) {
+    return this.customersUseCases.findCustomerByAuthId(referente.authUserId);
   }
 }
